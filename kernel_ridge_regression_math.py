@@ -96,8 +96,9 @@ def pred_lin(params):
             prediction = np.dot(k, w)
             predicted.append(prediction)
         predicted = np.asarray(predicted)
-        #mse = mean_squared_error(y_test, predicted)
-        acc_score = r2_score(y_test, predicted) * 100
+        mse = mean_squared_error(y_test, predicted)
+        acc_score = r2_score(y_test, predicted)
+        acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
     
     elif set_type == 'main':
         x_test, y_test = test_sets_main(dataset)
@@ -110,10 +111,11 @@ def pred_lin(params):
             prediction = np.dot(k, w)
             predicted.append(prediction)
         predicted = np.asarray(predicted)
-        #mse = mean_squared_error(y_test, predicted)
-        acc_score = r2_score(y_test, predicted) * 100
+        mse = mean_squared_error(y_test, predicted)
+        acc_score = r2_score(y_test, predicted)
+        acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
     
-    print ('Lin :' + str(acc_score))
+    print ('Lin :' + str(mse))
     return acc_score, predicted
 
 def pred_poly(params):
@@ -132,8 +134,9 @@ def pred_poly(params):
             prediction = np.dot(np.transpose(k), w)
             predicted.append(prediction)
         predicted = np.asarray(predicted)
-        #mse = mean_squared_error(y_test, predicted)
-        acc_score = r2_score(y_test, predicted) * 100
+        mse = mean_squared_error(y_test, predicted)
+        acc_score = r2_score(y_test, predicted)
+        acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
     
     elif set_type == 'main':
         x_test, y_test = test_sets_main(dataset)
@@ -146,10 +149,11 @@ def pred_poly(params):
             prediction = np.dot(np.transpose(k), w)
             predicted.append(prediction)
         predicted = np.asarray(predicted)
-        #mse = mean_squared_error(y_test, predicted)
-        acc_score = r2_score(y_test, predicted) * 100
+        mse = mean_squared_error(y_test, predicted)
+        acc_score = r2_score(y_test, predicted)
+        acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
     
-    print ('Poly :' + str(acc_score))
+    print ('Poly :' + str(mse))
     return acc_score, predicted
 
 def pred_gauss(params):
@@ -168,8 +172,9 @@ def pred_gauss(params):
             prediction = np.dot(k, w)
             predicted.append(prediction)
         predicted = np.asarray(predicted)
-        #mse = mean_squared_error(y_test, predicted)
-        acc_score = r2_score(y_test, predicted) * 100
+        mse = mean_squared_error(y_test, predicted)
+        acc_score = r2_score(y_test, predicted)
+        acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
     
     elif set_type == 'main':
         x_test, y_test = test_sets_main(dataset)
@@ -182,10 +187,11 @@ def pred_gauss(params):
             prediction = np.dot(k, w)
             predicted.append(prediction)
         predicted = np.asarray(predicted)
-        #mse = mean_squared_error(y_test, predicted)
-        acc_score = r2_score(y_test, predicted) * 100
+        mse = mean_squared_error(y_test, predicted)
+        acc_score = r2_score(y_test, predicted)
+        acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
     
-    print ('Gauss :' + str(acc_score))
+    print ('Gauss :' + str(mse))
     return acc_score, predicted
 
 

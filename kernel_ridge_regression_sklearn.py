@@ -62,11 +62,11 @@ compare_lin = []
 compare_poly = []
 compare_rbf =[]
 for k in ['linear', 'poly', 'rbf']:
-    for a in [100.0, 50.0, 10.0, 5.0, 1.0, 0.5, 0.1, 0.05, 0.01, 0.001, 0.0001]:
-        for d in [2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]:
-            for g in [1.0, 2.0, 3.0, 4.0, 5.0]:
-                for c in [1.0, 2.0, 3.0, 4.0, 5.0]:
-                    krr = KernelRidge(kernel=k, alpha=a, degree=d, gamma=g, coef0=c)
+    for a in [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]:
+        for d in [2.0, 3.0, 4.0, 5.0, 8.0, 10.0, 12.0, 15.0]:
+            for c in [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0]:
+                if k == 'linear':
+                    krr = KernelRidge(kernel=k, alpha=a, degree=d, gamma=None, coef0=c)
                     t = time.time()
                     krr.fit(x_train_cv, y_train_cv)
                     krr_fit = time.time() - t
@@ -77,14 +77,37 @@ for k in ['linear', 'poly', 'rbf']:
                     #print('Time Taken to Predict using the Fitted Model : ' + str(krr_predict) + 'Secs')
                     acc_score = r2_score(y_test_cv, y_krr) * 100
                     #print('Accuracy Score of the Model : ' + str(acc_score))
-                    if k == 'linear':
-                        compare_lin.append([a, krr_fit, krr_predict, acc_score])
-                    elif k == 'poly':
-                        compare_poly.append([a, d, (1/(2*(g**2))), c, krr_fit, krr_predict, acc_score])
-                    elif k == 'rbf':
-                        compare_rbf.append([a, (1/(2*(g**2))), krr_fit, krr_predict, acc_score])
-                    else:
-                        pass
+                    compare_lin.append([a, krr_fit, krr_predict, acc_score])
+                elif k == 'poly':
+                    for g in [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0]:
+                        krr = KernelRidge(kernel=k, alpha=a, degree=d, gamma=g, coef0=c)
+                        t = time.time()
+                        krr.fit(x_train_cv, y_train_cv)
+                        krr_fit = time.time() - t
+                        #print('Time Taken to Fit the Model : ' + str(krr_fit) + 'Secs')
+                        t = time.time()
+                        y_krr = krr.predict(x_test_cv)
+                        krr_predict = time.time() - t
+                        #print('Time Taken to Predict using the Fitted Model : ' + str(krr_predict) + 'Secs')
+                        acc_score = r2_score(y_test_cv, y_krr) * 100
+                        #print('Accuracy Score of the Model : ' + str(acc_score))
+                        compare_poly.append([a, d, g, c, krr_fit, krr_predict, acc_score])
+                elif k == 'rbf':
+                    for s in [1.0, 2.0, 5.0, 10.0, 100.0, 1000.0]:
+                        krr = KernelRidge(kernel=k, alpha=a, degree=d, gamma=s, coef0=c)
+                        t = time.time()
+                        krr.fit(x_train_cv, y_train_cv)
+                        krr_fit = time.time() - t
+                        #print('Time Taken to Fit the Model : ' + str(krr_fit) + 'Secs')
+                        t = time.time()
+                        y_krr = krr.predict(x_test_cv)
+                        krr_predict = time.time() - t
+                        #print('Time Taken to Predict using the Fitted Model : ' + str(krr_predict) + 'Secs')
+                        acc_score = r2_score(y_test_cv, y_krr) * 100
+                        #print('Accuracy Score of the Model : ' + str(acc_score))
+                        compare_rbf.append([a, s, krr_fit, krr_predict, acc_score])
+                else:
+                    pass
 print('\nTime Taken to Tune Hyper Parameter Values = ' + str((time.time()-tx)/60) + ' Mins')
 
 
@@ -113,7 +136,7 @@ poly_coef = compare_poly[poly_max[0]][0][3]
 # RBF/Gaussian
 rbf_max = np.where(compare_rbf[:, 4] == np.amax(compare_rbf[:, 4]))
 rbf_alpha = compare_rbf[rbf_max[0]][0][0]
-rbf_gamma = compare_rbf[rbf_max[0]][0][1]
+rbf_sigma = compare_rbf[rbf_max[0]][0][1]
 
 
 # Generate Prediction for selected Hyperparameters
@@ -157,8 +180,8 @@ plt.title('Polynomial Kernel - Y_test vs. Y_pred')
 plt.legend(['Y_test', 'Y_pred'])
 #Gaussian
 print('\nGaussian Kernel with Hyperparameters : Alpha = ' + str(rbf_alpha) + 
-      ', Gamma = 1/(2*Sigma^2) = ' + str(rbf_gamma))
-krr = KernelRidge(kernel='rbf', alpha=rbf_alpha, gamma=rbf_gamma)
+      ', Sigma = ' + str(rbf_sigma))
+krr = KernelRidge(kernel='rbf', alpha=rbf_alpha, gamma=rbf_sigma)
 t = time.time()
 krr.fit(x_test_main, y_test_main)
 krr_fit = time.time() - t
