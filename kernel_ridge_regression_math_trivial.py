@@ -88,8 +88,9 @@ def pred_lin(params):
             predicted.append(prediction)
         predicted = np.asarray(predicted)
         mse = mean_squared_error(y_test, predicted)
-        acc_score = r2_score(y_test, predicted)
-        acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
+        rmse = np.log10(np.sqrt(mse))
+        #acc_score = r2_score(y_test, predicted)
+        #acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
     
     elif set_type == 'main':
         x_test, y_test = test_sets_main(dataset)
@@ -103,11 +104,12 @@ def pred_lin(params):
             predicted.append(prediction)
         predicted = np.asarray(predicted)
         mse = mean_squared_error(y_test, predicted)
-        acc_score = r2_score(y_test, predicted)
-        acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
+        rmse = np.log10(np.sqrt(mse))
+        #acc_score = r2_score(y_test, predicted)
+        #acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
     
-    print ('Lin :' + str(mse))
-    return acc_score, predicted
+    #print ('Lin : ' + str(rmse))
+    return rmse, predicted
 
 def pred_poly(params):
     
@@ -126,8 +128,9 @@ def pred_poly(params):
             predicted.append(prediction)
         predicted = np.asarray(predicted)
         mse = mean_squared_error(y_test, predicted)
-        acc_score = r2_score(y_test, predicted)
-        acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
+        rmse = np.log10(np.sqrt(mse))
+        #acc_score = r2_score(y_test, predicted)
+        #acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
     
     elif set_type == 'main':
         x_test, y_test = test_sets_main(dataset)
@@ -141,11 +144,12 @@ def pred_poly(params):
             predicted.append(prediction)
         predicted = np.asarray(predicted)
         mse = mean_squared_error(y_test, predicted)
-        acc_score = r2_score(y_test, predicted)
-        acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
+        rmse = np.log10(np.sqrt(mse))
+        #acc_score = r2_score(y_test, predicted)
+        #acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
     
-    print ('Poly :' + str(mse))
-    return acc_score, predicted
+    #print ('Poly : ' + str(rmse))
+    return rmse, predicted
 
 def pred_gauss(params):
     
@@ -164,8 +168,9 @@ def pred_gauss(params):
             predicted.append(prediction)
         predicted = np.asarray(predicted)
         mse = mean_squared_error(y_test, predicted)
-        acc_score = r2_score(y_test, predicted)
-        acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
+        rmse = np.log10(np.sqrt(mse))
+        #acc_score = r2_score(y_test, predicted)
+        #acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
     
     elif set_type == 'main':
         x_test, y_test = test_sets_main(dataset)
@@ -179,11 +184,12 @@ def pred_gauss(params):
             predicted.append(prediction)
         predicted = np.asarray(predicted)
         mse = mean_squared_error(y_test, predicted)
-        acc_score = r2_score(y_test, predicted)
-        acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
+        rmse = np.log10(np.sqrt(mse))
+        #acc_score = r2_score(y_test, predicted)
+        #acc_score = (acc_score/(np.floor(np.log10(acc_score)) + 1)) * 100
     
-    print ('Gauss :' + str(mse))
-    return acc_score, predicted
+    #print ('Gauss : ' + str(rmse))
+    return rmse, predicted
 
 
 if __name__ == "__main__":
@@ -200,19 +206,19 @@ if __name__ == "__main__":
     # Tuning for Hyper Parameters
     tx = time.time()
     # No Tuning for Linear
-    acc_lin, _ = pred_lin([dataset_cv, 'cv'])
+    rmse_lin, _ = pred_lin([dataset_cv, 'cv'])
     # Tuning for Polynomial
     compare_poly = []
     for gamma in [1.0, 2.0, 3.0, 4.0, 5.0]:
         for r in [0.01, 0.05, 0.1, 0.5, 1.0, 5.0]:
             for M in [2.0, 3.0, 4.0]:
-                acc_poly, _ = pred_poly([dataset_cv, 'cv', (1/(2*(gamma**2))), r, M])
-                compare_poly.append([gamma, r, M, acc_poly])
+                rmse_poly, _ = pred_poly([dataset_cv, 'cv', (1/(2*(gamma**2))), r, M])
+                compare_poly.append([gamma, r, M, rmse_poly])
     # Tuning for Gaussian
     compare_gauss = []
     for sigma in [1.0, 2.0, 3.0, 4.0, 5.0]:
-        acc_gauss, _ = pred_gauss([dataset_cv, 'cv', sigma])
-        compare_gauss.append([sigma, acc_gauss])
+        rmse_gauss, _ = pred_gauss([dataset_cv, 'cv', sigma])
+        compare_gauss.append([sigma, rmse_gauss])
     print('\nTime Taken to Tune Hyper Parameter Values = ' + str((time.time()-tx)/60) + ' Mins')
     
     # Saving All Values obtained from Hyper Parameter Tuning
@@ -225,13 +231,13 @@ if __name__ == "__main__":
     
     # Fetching Hyperparameters based on Max Accuracy Score
     # Polynomial
-    poly_max = np.where(compare_poly[:, 3] == np.amax(compare_poly[:, 3]))
-    poly_gamma = compare_poly[poly_max[0]][0][0]
-    poly_r = compare_poly[poly_max[0]][0][1]
-    poly_M = compare_poly[poly_max[0]][0][2]
+    poly_min = np.where(compare_poly[:, 3] == np.amin(compare_poly[:, 3]))
+    poly_gamma = compare_poly[poly_min[0]][0][0]
+    poly_r = compare_poly[poly_min[0]][0][1]
+    poly_M = compare_poly[poly_min[0]][0][2]
     # Gaussian
-    gauss_max = np.where(compare_gauss[:, 1] == np.amax(compare_gauss[:, 1]))
-    gauss_sigma = compare_gauss[gauss_max[0]][0][0]
+    gauss_min = np.where(compare_gauss[:, 1] == np.amin(compare_gauss[:, 1]))
+    gauss_sigma = compare_gauss[gauss_min[0]][0][0]
     
     # Get Test Sets
     x_test, y_test = test_sets_main(dataset_main)
@@ -240,11 +246,11 @@ if __name__ == "__main__":
     # Linear
     print('\nLinear Kernel without Hyperparameters : ')
     t = time.time()
-    acc_lin, preds_lin = pred_lin([dataset_main, 'main'])
+    rmse_lin, preds_lin = pred_lin([dataset_main, 'main'])
     lin_t = time.time() - t
     print('Time Taken to Fit the Model and Predict : ' + str(lin_t) + ' Secs')
-    print('Accuracy Score of the Model : ' + str(acc_lin))
-    plt.figure('Linear Kernel')
+    print('Root Mean Square Error of the Model : ' + str(np.power(10, rmse_lin)))
+    plt.figure('Linear Kernel ~ Math ~ Trivial')
     plt.plot([x for x in range(0, len(y_test))], y_test, 'b.')
     plt.plot([x for x in range(0, len(y_test))], preds_lin, 'r-')
     plt.title('Linear Kernel - Y_test vs. Y_pred')
@@ -253,11 +259,11 @@ if __name__ == "__main__":
     print('\nPolynomial Kernel with Hyperparameters : Gamma = ' + str(poly_gamma) + 
           ', Coeff = ' + str(poly_r) + ', Degree = ' + str(poly_M))
     t = time.time()
-    acc_poly, preds_poly = pred_poly([dataset_main, 'main', poly_gamma, poly_r, poly_M])
+    rmse_poly, preds_poly = pred_poly([dataset_main, 'main', poly_gamma, poly_r, poly_M])
     poly_t = time.time() - t
     print('Time Taken to Fit the Model and Predict : ' + str(poly_t) + ' Secs')
-    print('Accuracy Score of the Model : ' + str(acc_poly))
-    plt.figure('Polynomial Kernel')
+    print('Root Mean Square Error of the Model : ' + str(np.power(10, rmse_poly)))
+    plt.figure('Polynomial Kernel ~ Math ~ Trivial')
     plt.plot([x for x in range(0, len(y_test))], y_test, 'b.')
     plt.plot([x for x in range(0, len(y_test))], preds_poly, 'r-')
     plt.title('Polynomial Kernel - Y_test vs. Y_pred')
@@ -265,11 +271,11 @@ if __name__ == "__main__":
     # Gaussian
     print('\nGaussian Kernel with Hyperparameters : Sigma = ' + str(gauss_sigma))
     t = time.time()
-    acc_gauss, preds_gauss = pred_gauss([dataset_main, 'main', gauss_sigma])
+    rmse_gauss, preds_gauss = pred_gauss([dataset_main, 'main', gauss_sigma])
     gauss_t = time.time() - t
     print('Time Taken to Fit the Model and Predict : ' + str(gauss_t) + ' Secs')
-    print('Accuracy Score of the Model : ' + str(acc_gauss))
-    plt.figure('Gaussian Kernel')
+    print('Root Mean Square Error of the Model : ' + str(np.power(10, rmse_gauss)))
+    plt.figure('Gaussian Kernel ~ Math ~ Trivial')
     plt.plot([x for x in range(0, len(y_test))], y_test, 'b.')
     plt.plot([x for x in range(0, len(y_test))], preds_gauss, 'r-')
     plt.title('Gaussian Kernel - Y_test vs. Y_pred')

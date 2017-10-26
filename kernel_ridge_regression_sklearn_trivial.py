@@ -144,7 +144,7 @@ krr_predict = time.time() - t
 print('Time Taken to Predict using the Fitted Model : ' + str(krr_predict) + ' Secs')
 acc_score = r2_score(y_test_main, y_krr) * 100
 print('Accuracy Score of the Model : ' + str(acc_score))
-plt.figure('Linear Kernel')
+plt.figure('Linear Kernel ~ SKLearn ~ Trivial')
 plt.plot([x for x in range(0, len(y_test_main))], y_test_main, 'b.')
 plt.plot([x for x in range(0, len(y_test_main))], y_krr, 'r-')
 plt.title('Linear Kernel - Y_test vs. Y_pred')
@@ -164,7 +164,7 @@ krr_predict = time.time() - t
 print('Time Taken to Predict using the Fitted Model : ' + str(krr_predict) + ' Secs')
 acc_score = r2_score(y_test_main, y_krr) * 100
 print('Accuracy Score of the Model : ' + str(acc_score))
-plt.figure('Polynomial Kernel')
+plt.figure('Polynomial Kernel ~ SKLearn ~ Trivial')
 plt.plot([x for x in range(0, len(y_test_main))], y_test_main, 'b.')
 plt.plot([x for x in range(0, len(y_test_main))], y_krr, 'r-')
 plt.title('Polynomial Kernel - Y_test vs. Y_pred')
@@ -183,7 +183,7 @@ krr_predict = time.time() - t
 print('Time Taken to Predict using the Fitted Model : ' + str(krr_predict) + ' Secs')
 acc_score = r2_score(y_test_main, y_krr) * 100
 print('Accuracy Score of the Model : ' + str(acc_score))
-plt.figure('Gaussian Kernel')
+plt.figure('Gaussian Kernel ~ SKLearn ~ Trivial')
 plt.plot([x for x in range(0, len(y_test_main))], y_test_main, 'b.')
 plt.plot([x for x in range(0, len(y_test_main))], y_krr, 'r-')
 plt.title('Gaussian Kernel - Y_test vs. Y_pred')
